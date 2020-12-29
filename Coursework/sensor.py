@@ -19,8 +19,7 @@ class Sensor:
         self.sensor_id = sensor_id
 
     def setIntersections(self, intersections):
-        #self.spot_in_sight = spot_in_sight
-        self.intersections = intersections.copy()
+        self.intersections = intersections
 
     def getIntersections(self):
         return self.intersections
@@ -33,15 +32,6 @@ class Sensor:
 
     def getReceiversAndData(self):
         return self.receivers, self.data_from_receiver
-
-    '''def setSenderReceiverParametres(self, protocol, window_size, receivers_num):
-        self.transmitters = []
-        self.senders = []
-        self.receivers = []
-        for i in range(receivers_num):
-            self.transmitters.append(Transmitter(Queue(), Queue()))
-            self.senders.append(Sender(self.transmitters[i], protocol, window_size))
-            self.receivers.append(Receiver(self.transmitters[i], protocol, window_size))'''
 
     def setSenderReceiverParametres(self, senders, transmitters, receivers, receivers_data):
         self.senders = senders
@@ -323,8 +313,6 @@ class DesignatedRouter:
         all_vectors = [data_1, data_2, data_3, data_4]
 
         return all_vectors
-
-
 
     def processGetDataFromSensors(self, protocol, window_size):
         corruption_p = 0

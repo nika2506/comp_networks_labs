@@ -20,7 +20,6 @@ class Transmitter:
     def __init__(self, sender_queue, receiver_queue):
         self.sender_queue = sender_queue
         self.receiver_queue = receiver_queue
-        self.data = []
 
     def get_sender(self):
         if self.sender_queue.empty():
@@ -34,7 +33,6 @@ class Transmitter:
 
     def send_receiver(self, msg):
         self.receiver_queue.put(msg)
-        self.data.append(msg)
 
     def send_sender(self, msg):
         self.sender_queue.put(msg)
@@ -72,17 +70,15 @@ class Receiver:
         if self.protocol == 0:
             return self.receive_go_back_n(num_packages, arr)
         elif self.protocol == 1:
-            return self.receive_selective_repeat(num_packages)
+            return self.receive_selective_repeat(num_packages, arr)
 
     def receive_go_back_n(self, num_packages, arr):
-        #num_packages = len(points)
         while True:
             frame = self.transmitter.get_receiver()
             if frame is None or frame.sequence != self.total_received:
                 continue
             if not frame.is_corrupted:
                 arr.append(frame.point)
-                #arr[self.total_received] = frame.point[]
                 self.total_received += 1
                 if self.print_comments:
                     print("Receiver: Received package with number %d" % frame.sequence)
@@ -100,7 +96,7 @@ class Receiver:
                 if self.print_comments:
                     print("Receiver: Sent nak for package with number %d" % frame.sequence)
 
-    def receive_selective_repeat(self, num_packages):
+    def receive_selective_repeat(self, num_packages, arr):
         buffer = []
         while True:
             package = self.transmitter.get_receiver()
@@ -112,12 +108,12 @@ class Receiver:
                     if self.print_comments:
                         print("Receiver: Sent nak for package with number %d" % package.sequence)
                     continue
-
+                arr.append(package.point)
                 self.total_received += 1
                 if self.print_comments:
                     print("Receiver: Received package with number %d" % package.sequence)
 
-                self.transmitter.send_sender(Package(package.sequence, Message.ACK, False))
+                self.transmitter.send_sender(Package(package.sequence, Message.ACK, False, package.point))
                 self.total_sent_ack += 1
                 if self.print_comments:
                     print("Receiver: Sent ack for package with number %d" % package.sequence)

@@ -810,19 +810,15 @@ if __name__ == "__main__":
     screen_height = 2
     spot_diam = 1.1
     move_step = 0.2
-    move_iter = 5
 
     screen = Screen(screen_centre, screen_height, spot_diam, move_step)
-    sensor_system = DesignatedRouter(screen_centre, screen_height)
+    router = DesignatedRouter(screen_centre, screen_height)
 
-    #screen.processMoveSpot(move_iter, True)
-    #screen.makePlotSpot()
     screen.randMoveSpot()
-    #screen.makePlotSpot()
-    sensor_system.setIntersectionsForSensors(*screen.intersectionsWithSensors())
+    router.setIntersectionsForSensors(*screen.intersectionsWithSensors())
     screen.makePlotSpotAndIntersections()
-    sensor_system.processGetDataFromSensors(0, 2)
-    new_centre = sensor_system.calculateNewCentre()
+    router.processGetDataFromSensors(0, 2)
+    new_centre = router.calculateNewCentre()
     print('Центр окружности: ', new_centre)
 
     n_mirrors = 5
